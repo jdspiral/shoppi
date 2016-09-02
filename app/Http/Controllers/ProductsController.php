@@ -3,19 +3,23 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
+use App\Product;
 
-use App\Http\Requests;
-
-class ProductController extends Controller
+/**
+ * Class ProductsController
+ * @package App\Http\Controllers
+ */
+class ProductsController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Product $products)
     {
-
+        return $products->all();
     }
 
     /**
@@ -25,7 +29,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -36,7 +40,17 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $product = new Product;
+        $product->name = $request->name;
+        $product->price = $request->price;
+        $product->description = $request->description;
+        $product->save();
+
+        return Response::json([
+            'data' => $product->toArray()
+        ], 200);
+
+
     }
 
     /**
@@ -47,7 +61,21 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        //
+        $product = Product::find($id);
+
+        if (!$product)
+        {
+            return Response::json([
+               'error' => [
+                   'message' => 'Product does not exist',
+                   'code' => 'add error code here - josh'
+               ]
+            ], 404);
+        }
+
+        return Response::json([
+           'data' => $product->toArray()
+        ], 200);
     }
 
     /**
