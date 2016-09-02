@@ -16,8 +16,10 @@ Route::get('/', function () {
 });
 
 
-Route::get('/products', function () {
-    return \App\Product::all();
-});
+
+//Route::group(['prefix' => 'api/v1'], function()
+//{
+//    Route::resource('products', 'ProductsController');
+//});
 
 
