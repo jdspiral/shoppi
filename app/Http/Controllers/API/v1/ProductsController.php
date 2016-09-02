@@ -1,10 +1,16 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: josh
+ * Date: 9/2/16
+ * Time: 6:05 PM
+ */
 
-namespace App\Http\Controllers;
-
+namespace App\Http\Controllers\API\v1;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use App\Product;
+use App\Http\Controllers\Controller;
 
 /**
  * Class ProductsController
@@ -19,8 +25,7 @@ class ProductsController extends Controller
      */
     public function index(Product $products)
     {
-        $products = $products->all();
-        return view('products.index', compact('products'));
+        return $products->all();
     }
 
     /**
@@ -47,7 +52,9 @@ class ProductsController extends Controller
         $product->description = $request->description;
         $product->save();
 
-        return view('products.view');
+        return Response::json([
+            'data' => $product->toArray()
+        ], 200);
 
 
     }
@@ -65,15 +72,15 @@ class ProductsController extends Controller
         if (!$product)
         {
             return Response::json([
-               'error' => [
-                   'message' => 'Product does not exist',
-                   'code' => 'add error code here - josh'
-               ]
+                'error' => [
+                    'message' => 'Product does not exist',
+                    'code' => 'add error code here - josh'
+                ]
             ], 404);
         }
 
         return Response::json([
-           'data' => $product->toArray()
+            'data' => $product->toArray()
         ], 200);
     }
 
