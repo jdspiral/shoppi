@@ -7,26 +7,28 @@
  */
 
 namespace App\Http\Controllers\API\v1;
-use App\Transformers\ProductsTransformer;
+use App\Transformers\ProductTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use App\Product;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\API\ApiController;
 
 /**
  * Class ProductsController
  * @package App\Http\Controllers
  */
-class ProductsController extends Controller
+class ProductsController extends ApiController
 {
     /**
-     * @var App\Transformers\ProductTransformer
+     * @var \App\Transformers\ProductTransformer
      */
     protected $productTransformer;
 
-    function __construct(ProductsTransformer $productTransformer)
+    function __construct(ProductTransformer $productTransformer)
     {
         $this->productTransformer = $productTransformer;
+
+        //$this->beforeFilter('auth.basic', ['on' => 'post']);
     }
 
     /**
@@ -37,19 +39,9 @@ class ProductsController extends Controller
     public function index()
     {
         $products = Product::all();
-        return Response::json([
-            'data' => $this->productTransformer->transformCollection($products->toArray())
-        ], 200, [], JSON_PRETTY_PRINT);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-
+        return $this->respond([
+            'data' => $this->productTransformer->transformCollection($products->all())
+        ]);
     }
 
     /**
@@ -60,15 +52,13 @@ class ProductsController extends Controller
      */
     public function store(Request $request)
     {
-        $product = new Product;
-        $product->name = $request->name;
-        $product->price = $request->price;
-        $product->description = $request->description;
-        $product->save();
+        if(!$request->name && !$request->price) {
+            return $this->setStatusCode(422)
+                ->respondWithError('Paramenter failed validation for a product.');
+        }
+        Product::create($request->all());
 
-        return Response::json([
-            'data' => $product->toArray()
-        ], 201);
+        return $this->respondCreated('Product successfully created.');
 
 
     }
@@ -84,28 +74,12 @@ class ProductsController extends Controller
         $product = Product::find($id);
 
         if (!$product) {
-            return Response::json([
-                'error' => [
-                    'message' => 'Product does not exist',
-                    'code' => 'add error code here - josh'
-                ]
-            ], 404);
+            return $this->respondNotFound('Product does not exist');
         }
 
-        return Response::json([
+        return $this->respond([
             'data' => $this->productTransformer->transform($product->toArray())
-        ], 200, [], JSON_PRETTY_PRINT);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        ]);
     }
 
     /**
