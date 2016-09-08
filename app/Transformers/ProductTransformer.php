@@ -9,7 +9,7 @@
 namespace App\Transformers;
 
 
-class ProductsTransformer extends Transformer
+class ProductTransformer extends Transformer
 {
 
 
