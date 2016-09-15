@@ -48,7 +48,7 @@ class ProductsController extends Controller
         $product->price = $request->price;
         $product->save();
 
-        return view('products.index');
+        return redirect('/');
 
     }
 
