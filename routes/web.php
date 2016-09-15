@@ -10,7 +10,7 @@
 | to using a Closure or controller method. Build something great!
 |
 */
-Route::get('/', 'Web\ProductsController@index');
+Route::resource('/', 'Web\ProductsController');
 
 
 
