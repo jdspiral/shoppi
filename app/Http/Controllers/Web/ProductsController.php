@@ -44,12 +44,11 @@ class ProductsController extends Controller
     {
         $product = new Product;
         $product->name = $request->name;
-        $product->price = $request->price;
         $product->description = $request->description;
+        $product->price = $request->price;
         $product->save();
 
         return view('products.view');
-
 
     }
 
