@@ -6,7 +6,7 @@ class ApiTester extends TestCase {
 
     protected $fake;
 
-    protected $times;
+    protected $times = 1;
 
     function __construct()
     {
